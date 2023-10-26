@@ -23,8 +23,8 @@ services:
       - TAPO_PASSWORD=CHANGE_ME
       - PORT=9333 # optional
 ```
-Create tapo.yaml and list P110 ips/names that expoerter will be able to reach them.
-You can check it in the tapo app -> the plug -> gear in top right -> "Device info": IP address OR in your router Wifi router DHCP leases) tip: make a lease static
+Create tapo.yaml and list P110 ips/names that exporter will be able to reach them.
+You can check it in the Tapo App -> the plug -> gear in top right -> "Device info": IP address OR in your router Wifi router DHCP leases) tip: make a lease static
 ```yml
 devices:
   study: "192.168.1.102"
@@ -34,7 +34,7 @@ Run the exporter
 ```console
 docker compose up -d
 ```
-Add exporter to Prometheus by adding a job (replace 127.0.0.1 your exporter machine) :
+Add exporter to Prometheus by adding a job (replace 127.0.0.1 with your exporter machine):
 
 ```yml
 scrape_configs:
@@ -44,7 +44,7 @@ scrape_configs:
       labels:
         machine: 'home'
 ```
-Import Grafa dashboard json Energy monitoring-1664376150978.json for latest update or just import from by pasting [id 17104](https://grafana.com/grafana/dashboards/17104-energy-monitoring/)
+Import Grafana dashboard (JSON) - Energy monitoring-1664376150978.json for latest update, or just import by pasting [id 17104](https://grafana.com/grafana/dashboards/17104-energy-monitoring/)
 
 ### Building from srouce
 ```console
@@ -57,7 +57,7 @@ Run the exporter
 ```console
 docker compose up -d
 ```
-Add to Prometheus and import grafana
+Add to Prometheus and import Grafana
 ## Exposed Metrics
 
 ```
