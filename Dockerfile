@@ -1,10 +1,12 @@
 FROM python:3.11-slim-bullseye AS builder
-RUN apt-get update; apt-get -y upgrade; apt-get clean; apt-get install binutils -y
+RUN apt-get update; apt-get -y upgrade; apt-get clean; apt-get install binutils git -y
 
 # Default port
 ENV PORT=9333
 
-RUN pip3 install --no-cache-dir PyInstaller loguru prometheus_client PyP100 click pyyaml
+RUN pip3 install --no-cache-dir PyInstaller loguru prometheus_client click pyyaml
+RUN pip3 install git+https://github.com/almottier/TapoP100.git@main
+
 
 COPY . /app
 WORKDIR /app

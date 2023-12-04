@@ -143,7 +143,7 @@ class Collector:
             })
 
             try:
-                data = self.get_device_data(device, ip_addr, room)['result']
+                data = self.get_device_data(device, ip_addr, room)
 
                 labels = [ip_addr, room]
                 metrics[MetricType.TODAY_RUNTIME].add_metric(labels, data['today_runtime'])
