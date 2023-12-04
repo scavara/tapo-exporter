@@ -2,6 +2,7 @@ from contextlib import contextmanager
 from enum import Enum, auto
 from math import floor
 from time import time
+from time import sleep
 
 from loguru import logger
 from prometheus_client import Histogram
@@ -90,26 +91,37 @@ class Collector:
     def __init__(self, deviceMap, email_address, password):
         def create_device(ip_address, room):
             extra = {
-                "ip": ip_address, "room": room,
+                "ip": ip_address,
+                "room": room,
             }
-
             logger.debug("connecting to device", extra=extra)
+            
+            exception_count = 0  # Counter for exceptions
+            
             while True:
                 try:
                     d = PyP110.P110(ip_address, email_address, password)
                     d.handshake()
                     d.login()
-                except :
-                    logger.error("failed to connect to device", extra=extra)
+                except Exception as e:
+                    exception_count += 1
+                    logger.error("failed to connect to device", extra=extra, exc_info=True)
+                    if exception_count >= 3:  # Return None after the third exception
+                        d = None
+                        break
+                    sleep(1)  # Sleep for 1 second after each exception
                     continue
                 break
 
-            logger.debug("successfully authenticated with device", extra=extra)
+            if d is not None:
+                logger.debug("successfully authenticated with device", extra=extra)
+            
             return d
 
         self.devices = {
-            room: (ip_address, create_device(ip_address, room))
+            room: (ip_address, device)
             for room, ip_address in deviceMap.items()
+            if (device := create_device(ip_address, room)) is not None
         }
 
     def get_device_data(self, device, ip_address, room):
@@ -144,3 +156,5 @@ class Collector:
 
         for m in metrics.values():
             yield m        
+
+            
