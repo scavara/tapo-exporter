@@ -1,13 +1,18 @@
 version: '3'
 
 services:
-  tapo-P110-exporter:
-    image: p110-exporter
+  tapo-exporter:
+    image: tapo-exporter
     volumes:
-       - ./tapo.yaml:/app/tapo.yaml:ro
+       - ./tapo.yml:/app/tapo.yaml:ro
     ports:
       - 9333:9333
     environment:
-      - TAPO_EMAIL=YOUR@EMAIL.COM
-      - TAPO_PASSWORD=CHANGE_ME
+      - TAPO_EMAIL=${tapo_email}
+      - TAPO_PASSWORD=${tapo_password}
       - PORT=9333 # optional
+    networks:
+      - prometheus_localprom
+networks:
+  prometheus_localprom:
+    external: true

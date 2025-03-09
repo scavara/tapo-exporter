@@ -1,0 +1,72 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: Tapo
+      folder: Tapo
+      interval: 5m
+      rules:
+        - uid: defbvakwkks8we
+          title: Number of TP-Link Tapo P100 plugs
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 21600
+                to: 0
+              datasourceUid: grafanacloud-prom
+              model:
+                adhocFilters: []
+                datasource:
+                    type: prometheus
+                    uid: grafanacloud-prom
+                disableTextWrap: false
+                editorMode: builder
+                expr: tapo_p100_device_count
+                fullMetaSearch: false
+                includeNullMetadata: true
+                instant: true
+                interval: ""
+                intervalMs: 60000
+                legendFormat: '{{machine}}'
+                maxDataPoints: 43200
+                range: false
+                refId: A
+                useBackend: false
+            - refId: C
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 5
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: c40p3MV4z
+          panelId: 6
+          noDataState: NoData
+          execErrState: Error
+          for: 5m
+          annotations:
+            __dashboardUid__: c40p3MV4z
+            __panelId__: "6"
+          labels: {}
+          isPaused: false
+          notification_settings:
+            receiver: grafana-default-email
+

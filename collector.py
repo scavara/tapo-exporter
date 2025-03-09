@@ -7,11 +7,11 @@ from time import sleep
 from loguru import logger
 from prometheus_client import Histogram
 from prometheus_client.core import GaugeMetricFamily
-from PyP100 import PyP110
+from PyP100 import PyP100
 
 
 OBSERVATION_RED_METRICS = Histogram(
-    "tapo_p110_observation_rate_ms",
+    "tapo_p100_observation_rate_ms",
     "RED metrics for queries to the TP-Link TAPO P110 devices. (milliseconds)",
     labelnames=["ip_address", "room", "success"],
     buckets=(10, 100, 150, 200, 250, 300, 500, 750, 1000, 1500, 2000)
@@ -30,31 +30,31 @@ class MetricType(Enum):
 def get_metrics():
     return {
         MetricType.DEVICE_COUNT: GaugeMetricFamily(
-            "tapo_p110_device_count",
+            "tapo_p100_device_count",
             "Number of available TP-Link TAPO P110 Smart Sockets.",
         ),
         MetricType.TODAY_RUNTIME: GaugeMetricFamily(
-            "tapo_p110_today_runtime_mins",
+            "tapo_p100_today_runtime_mins",
             "Current running time for the TP-Link TAPO P110 Smart Socket today. (minutes)",
             labels=["ip_address", "room"],
         ),
         MetricType.MONTH_RUNTIME: GaugeMetricFamily(
-            "tapo_p110_month_runtime_mins",
+            "tapo_p100_month_runtime_mins",
             "Current running time for the TP-Link TAPO P110 Smart Socket this month. (minutes)",
             labels=["ip_address", "room"],
         ),
         MetricType.TODAY_ENERGY: GaugeMetricFamily(
-            "tapo_p110_today_energy_wh",
+            "tapo_p100_today_energy_wh",
             "Energy consumed by the TP-Link TAPO P110 Smart Socket today. (Watt-hours)",
             labels=["ip_address", "room"],
         ),
         MetricType.MONTH_ENERGY: GaugeMetricFamily(
-            "tapo_p110_month_energy_wh",
+            "tapo_p100_month_energy_wh",
             "Energy consumed by the TP-Link TAPO P110 Smart Socket this month. (Watt-hours)",
             labels=["ip_address", "room"],
         ),
         MetricType.CURRENT_POWER: GaugeMetricFamily(
-            "tapo_p110_power_consumption_w",
+            "tapo_p100_power_consumption_w",
             "Current power consumption for TP-Link TAPO P110 Smart Socket. (Watts)",
             labels=["ip_address", "room"],
         ),
@@ -100,7 +100,7 @@ class Collector:
             
             while True:
                 try:
-                    d = PyP110.P110(ip_address, email_address, password)
+                    d = PyP100.P100(ip_address, email_address, password)
                     d.handshake()
                     d.login()
                 except Exception as e:
@@ -143,14 +143,14 @@ class Collector:
             })
 
             try:
-                data = self.get_device_data(device, ip_addr, room)
+              #  data = self.get_device_data(device, ip_addr, room)
 
                 labels = [ip_addr, room]
-                metrics[MetricType.TODAY_RUNTIME].add_metric(labels, data['today_runtime'])
-                metrics[MetricType.MONTH_RUNTIME].add_metric(labels, data['month_runtime'])
-                metrics[MetricType.TODAY_ENERGY].add_metric(labels, data['today_energy'])
-                metrics[MetricType.MONTH_ENERGY].add_metric(labels, data['month_energy'])
-                metrics[MetricType.CURRENT_POWER].add_metric(labels, data['current_power'])
+              #  metrics[MetricType.TODAY_RUNTIME].add_metric(labels, data['today_runtime'])
+              #  metrics[MetricType.MONTH_RUNTIME].add_metric(labels, data['month_runtime'])
+              #  metrics[MetricType.TODAY_ENERGY].add_metric(labels, data['today_energy'])
+              #  metrics[MetricType.MONTH_ENERGY].add_metric(labels, data['month_energy'])
+              #  metrics[MetricType.CURRENT_POWER].add_metric(labels, data['current_power'])
             except Exception as e:
                 logger.exception("encountered exception during observation!")
 
